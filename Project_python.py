@@ -60,7 +60,7 @@ def mark_task_done():
         print("Bitte eine gültige Zahl eingeben")
         return
         
-    if not 1 <= nummer <= len(aufgaben ): # try catch verbesserung ..
+    if not 1 <= nummer <= len(aufgaben ): #
         print("Ungültige Nummer.")
         return
     if aufgaben[nummer - 1].startswith("X "): # wenn es schon markiert ist mit x
