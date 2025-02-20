@@ -23,7 +23,6 @@ datei_name = "todo_list.txt"  # variabel für meine liste
 
 """Fügt eine neue Aufgabe zur Datei hinzu."""
 def add_task():
-   
     datei = open(datei_name, "a")  # Datei öffnen, um neue Aufgaben hinzuzufügen, a steht für append also wenn die datei nicht existiert wird sie erstellt
     aufgabe = input("Gib die Aufgabe ein: ")  # Nutzer wird aufgefordert und gibt eine neue Aufgabe ein
     datei.write(aufgabe + "\n")  # Aufgabe in Datei speichern \n steht für neue zeile
@@ -44,48 +43,58 @@ def show_tasks():
 
 """Markiert eine Aufgabe als erledigt."""
 def mark_task_done():
-    datei = open(datei_name, "r") # Datei öffnen, um Aufgaben zu lesen
-    aufgaben = datei.readlines() # Alle Zeilen aus der Datei holen
-    datei.close() # Datei schließen
+    try:
+        datei = open(datei_name, "r") # Datei öffnen, um Aufgaben zu lesen
+        aufgaben = datei.readlines() # Alle Zeilen aus der Datei holen
+    finally:
+        datei.close() # Datei schließen
     
-    if len(aufgaben) != 0:
-        show_tasks()
-        nummer = int(input("Welche Aufgabe wurde erledigt? "))  # Nutzer gibt Nummer ein input nimmt es als  string und mit int wandelt er es in eine ganze zahl um bzw integer
-        
-        if 1 <= nummer <= len(aufgaben):  # Prüfen, ob Nummer gültig ist
-            if aufgaben[nummer - 1].startswith("X "): # wenn es schon markiert ist mit x
-                print("Diese Aufgabe ist schon erledigt.")
-            else:
-                aufgaben[nummer - 1] = "X " + aufgaben[nummer - 1]  # "X " hinzufügen
-                datei = open(datei_name, "w") # öffnet die datein um darin rein zu schreiben
-                datei.writelines(aufgaben)  # Datei mit neuen Daten überschreiben
-                datei.close()
-                print("Aufgabe erledigt.")
-        else:
-            print("Ungültige Nummer.")
-    else:
+    if len(aufgaben) == 0:
         print("Keine Aufgaben vorhanden.")
+        return
+
+    show_tasks()
+    try:
+            nummer = int(input("Welche Aufgabe wurde erledigt? "))  # Nutzer gibt Nummer ein input nimmt es als  string und mit int wandelt er es in eine ganze zahl um bzw integer
+    except:
+        print("Bitte eine gültige Zahl eingeben")
+        return
+        
+    if not 1 <= nummer <= len(aufgaben ): # try catch verbesserung ..
+        print("Ungültige Nummer.")
+        return
+    if aufgaben[nummer - 1].startswith("X "): # wenn es schon markiert ist mit x
+        print("Diese Aufgabe ist schon erledigt.")
+        return
+    aufgaben[nummer - 1] = "X " + aufgaben[nummer - 1]  # "X " hinzufügen
+    try:
+        datei = open(datei_name, "w") # öffnet die datein um darin rein zu schreiben
+        datei.writelines(aufgaben)  # Datei mit neuen Daten überschreiben
+    finally:
+        datei.close()
+    print("Aufgabe erledigt.")
 
 """Löscht eine Aufgabe."""
 def delete_task():
-    datei = open(datei_name, "r") # Datei öffnen, um Aufgaben zu lesen
-    aufgaben = datei.readlines() # Alle Zeilen aus der Datei holen
-    datei.close() # Datei schließen
+    try:
+        datei = open(datei_name, "r") # Datei öffnen, um Aufgaben zu lesen
+        aufgaben = datei.readlines() # Alle Zeilen aus der Datei holen
+    finally:
+        datei.close() # Datei schließen
     
-    if len(aufgaben) != 0:
-        show_tasks()
-        nummer = int(input("Welche Aufgabe soll gelöscht werden? "))
-        
-        if 1 <= nummer <= len(aufgaben):
-            del aufgaben[nummer - 1]  # Aufgabe entfernen
-            datei = open(datei_name, "w")
-            datei.writelines(aufgaben)  # Datei neu schreiben
-            datei.close()
-            print("Aufgabe gelöscht.")
-        else:
-            print("Ungültige Nummer.")
-    else:
+    if len(aufgaben) == 0:
         print("Keine Aufgaben vorhanden.")
+    show_tasks()
+    nummer = int(input("Welche Aufgabe soll gelöscht werden? "))
+        
+    if 0 < nummer <= len(aufgaben):
+        del aufgaben[nummer - 1]  # Aufgabe entfernen
+        datei = open(datei_name, "w")
+        datei.writelines(aufgaben)  # Datei neu schreiben
+        datei.close()
+        print("Aufgabe gelöscht.")
+    else:
+        print("Ungültige Nummer.")
 
 """Steuert das Menü."""
 def main():
